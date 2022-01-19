@@ -16,6 +16,7 @@
     <!--<Window.DataContext>-->
         <!-- 需要添加命名空间 xmlns:viewmodel="clr-namespace:计账App.ViewModel" -->
     <!--</Window.DataContext>-->
+    
     <!--资源树-->
     <Window.Resources>
         <converter:InsertConverters x:Key="Converter"/>
