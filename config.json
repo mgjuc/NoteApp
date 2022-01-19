@@ -1,0 +1,15 @@
+{
+  "version": "2.0",
+  "readme": "MVVM重构，DI优化,待加入日志系统",
+  "setting": {
+    "type": [ "吃喝", "消费吃喝", "生活用品", "住宿", "办公用品", "其它" ],
+    "mysqlCon": {
+      "server": "localhost",
+      "port": "3306",
+      "user": "root",
+      "pwd": "root",
+      "database": "db1"
+    },
+    "sqlite": "sqlite.db"
+  }
+}

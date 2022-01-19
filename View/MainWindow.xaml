@@ -1,0 +1,283 @@
+﻿<Window x:Class="记账App.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:记账App" 
+        xmlns:viewmodel="clr-namespace:记账App.ViewModel" 
+        xmlns:converter="clr-namespace:记账App.Converters"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
+        Title="记账App" MinHeight="450" MinWidth="800" WindowStyle="None" ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterScreen" MaxHeight="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}}"
+        WindowChrome.WindowChrome="{DynamicResource WindowChromeKey}">  <!--MaxHeight:限制最大高度，不摭挡任务栏-->
+    <!--xmlns:viewmodel="clr-namespace:计账App.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:Searchdb}"-->
+    <!--<Window.DataContext>-->
+        <!-- 需要添加命名空间 xmlns:viewmodel="clr-namespace:计账App.ViewModel" -->
+    <!--</Window.DataContext>-->
+    <!--资源树-->
+    <Window.Resources>
+        <converter:InsertConverters x:Key="Converter"/>
+        <!--<model:ConfigController x:Key="Configs"/>-->
+        <!--<local:MainWindow x:Key="local"/>-->
+
+        <!--定义WindowChrome非工作区样式类，去掉顶部白条，需要在 window头动态引用-->
+        <WindowChrome x:Key="WindowChromeKey">
+            <!--四边不可见调整窗口大小的边框-->
+            <WindowChrome.ResizeBorderThickness>
+                <Thickness>5</Thickness>
+            </WindowChrome.ResizeBorderThickness>
+            <!--系统标题栏的高度，提供系统标题栏功能-->
+            <WindowChrome.CaptionHeight>40</WindowChrome.CaptionHeight>            
+        </WindowChrome>
+        
+        <!--全局样式-->
+        <!--日期输入样式式YYYY-MM-DD ==> 只影响前台显示，后台数据还是yyyy/mm/dd -->
+        <!--<Style TargetType="{x:Type DatePickerTextBox}">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <TextBox Text="{Binding Path=SelectedDate, StringFormat='yyyy-MM-dd', 
+                            RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>-->
+
+        <Style TargetType="DataGrid">
+            <!--Datagrid全局设置，网格线颜色-->
+            <Setter Property="HeadersVisibility" Value="Column"/><!--表头可见性，隐藏行表头-->
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="CanUserResizeColumns" Value="True"/>
+            <Setter Property="CanUserSortColumns" Value="False"/>
+            <Setter Property="Background" Value="#DEEFFD" />
+            <Setter Property="BorderBrush" Value="#DEEFFD" />
+            <Setter Property="HorizontalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#d6c79b"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="VerticalGridLinesBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#d6c79b"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--标题栏样式-->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        <!--<Style TargetType="DataGridColumnHeader">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="28" />
+            <Setter Property="Foreground" Value="#323433" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border x:Name="BackgroundBorder" BorderThickness="0,1,0,1"
+                             BorderBrush="#e6dbba"
+                              Width="Auto">
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter  Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                <Path x:Name="SortArrow" Visibility="Collapsed" Data="M0,0 L1,0 0.5,1 z" Stretch="Fill"  Grid.Column="2" Width="8" Height="6" Fill="White" Margin="0,0,50,0"
+                            VerticalAlignment="Center" RenderTransformOrigin="1,1" />
+                                <Rectangle Width="1" Fill="#d6c79b" HorizontalAlignment="Right" Grid.ColumnSpan="1" />
+                                --><!--<TextBlock  Background="Red">
+                            <ContentPresenter></ContentPresenter></TextBlock>--><!--
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Height" Value="25"/>
+        </Style>-->
+        
+        <!--行样式触发-->
+        <!--背景色改变必须先设置cellStyle 因为cellStyle会覆盖rowStyle样式-->
+        <Style  TargetType="DataGridRow">
+            <!--<Setter Property="Background" Value="#F2F2F2" />-->
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black" />
+            <Style.Triggers>
+                <!--隔行换色-->
+                <!--<Trigger Property="AlternationIndex" Value="0" >
+                    <Setter Property="Background" Value="#e7e7e7" />
+                </Trigger>
+                <Trigger Property="AlternationIndex" Value="1" >
+                    <Setter Property="Background" Value="#f2f2f2" />
+                </Trigger>-->
+
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#DEEFFD"/>
+                    <!--<Setter Property="Foreground" Value="White"/>-->
+                </Trigger>
+
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="#DEEFFD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--单元格样式触发-->
+        <Style TargetType="DataGridCell">
+            <!--<Setter Property="IsEditing" Value="False"/>-->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <TextBlock TextAlignment="Center" VerticalAlignment="Center"  >
+                           <ContentPresenter />
+                        </TextBlock>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#DEEFFD"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!--<Style TargetType="DataGridCell">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" Width="auto"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>-->
+    </Window.Resources>
+
+    <Grid ShowGridLines="False" Background="Transparent" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+        <!--Grid_MouseLeftButtonDown==>全局拖动事件-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,0,10" ShowGridLines="False" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Image Margin="0,0,0,0" Source="/log.ico" Width="30" Height="30"/>
+                <TextBlock Margin="0,0,0,0" Text="记账App" FontFamily="Microsoft YaHei UI" TextAlignment="Center" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <!-- WindowChrome.IsHitTestVisibleInChrome==>True,非工作区接收鼠标事件，否则为默认标题栏动作 -->
+                <Button Width="45" Height="30" Content="─" Foreground="Black" BorderThickness="0" Background="Transparent" Click="btnMin_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                <Button Width="45" Height="30" Content="☐" Foreground="Black" BorderThickness="0" Background="Transparent" Click="btnMax_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                <Button Width="45" Height="30" Content="✕" Foreground="Black" BorderThickness="0" Background="Transparent" Click="btnClose_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
+            <Label Margin="5,0,0,0" Content="日期"/>
+            <!--<DatePicker Name="date" Width="100" VerticalAlignment="Center" Text="" SelectedDate="{Binding PropertyName, StringFormat=dd/MM/yyyy}}"/> StringFormat设置格式-->
+            <DatePicker Name="date" Width="100" VerticalAlignment="Center" Text="" SelectedDate="{x:Static sys:DateTime.Now}"/>
+            <Label Margin="10,0,0,0" Content="金额"/>
+            <TextBox Name="cost" Width="45" Height="23" Text=""  VerticalContentAlignment="Center" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="cost_PreviewTextInput"/>
+            <Label Margin="10,0,0,0" Content="内容" />
+            <TextBox Name="goods" Width="100" Height="23" Text=""  VerticalContentAlignment="Center"/>
+            <Label Margin="10,0,0,0" Content="消费类"/>
+            <!--ItemsSource="{Binding List, Mode=OneWay, NotifyOnSourceUpdated=True, Source={StaticResource Configs}}"-->
+            <ComboBox Name="type" Width="100" SelectedIndex="0" VerticalAlignment="Center" IsEditable="False" 
+                      ItemsSource="{Binding ConfigService.List}"
+                      DisplayMemberPath="Value" SelectedValuePath="ID"/>
+            <!--<ComboBoxItem Content="{Binding Type[0]}"/>-->
+            <!--<ComboBoxItem IsSelected="True" Content="{Binding}"/>
+                <ComboBoxItem>消费吃喝</ComboBoxItem>
+                <ComboBoxItem>生活用品</ComboBoxItem>
+                <ComboBoxItem>住宿</ComboBoxItem>
+                <ComboBoxItem>办公用品</ComboBoxItem>
+                <ComboBoxItem>其它</ComboBoxItem>-->
+
+            <Label Margin="10,0,0,0" Content="备注"/>
+            <!--此处binding和下面的binding同步-->
+            <TextBox Name="mark" Width="100" Height="23" Text="" VerticalContentAlignment="Center"/>
+            <Button Margin="10,0,0,0" Width="80" Height="23" Content="提交" Command="{Binding DataService.InsertCommand}">
+                <!--绑定元素值-->
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource Converter}">
+                        <Binding Path="Text" ElementName="date" StringFormat="{}{0:yyyy-MM-dd}"/>
+                        <Binding Path="Text" ElementName="goods"/>
+                        <Binding Path="Text" ElementName="cost"/>
+                        <Binding Path="Text" ElementName="type"/>   <!--提取ComboBox的Content-->
+                        <Binding Path="Text" ElementName="mark"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+            </Button>
+            <Button Margin="10,0,0,0" Width="auto" Height="auto" Content="帮助" Command="{Binding OpenDialog}"/>
+        </StackPanel>
+        
+        <DataGrid Grid.Row="2" Grid.Column="0" ItemsSource="{Binding DataService.DailyCosts}" AutoGenerateColumns="False" HorizontalGridLinesBrush="#F4F4F4"
+                  VerticalGridLinesBrush="#F4F4F4" Margin="10,10,10,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Width="1.5*" Header="日期" Binding="{Binding Path=Date}"/>
+                    <!--内嵌样式-->
+                    <!--<DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>-->
+                <DataGridTextColumn Width="1*" Header="金额" Binding="{Binding Path=Cost}"/>
+                <DataGridTextColumn Width="2*" Header="内容" Binding="{Binding Path=Goods}"/>
+                <DataGridTextColumn Width="2*" Header="消费类" Binding="{Binding Path=Type}"/>
+                <DataGridTextColumn Width="3.5*" Header="备注" Binding="{Binding Path=Comments}"/>
+            </DataGrid.Columns>
+            <!--<DataTable></DataTable>-->
+        </DataGrid>
+        
+        <UniformGrid Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Width="auto" Height="auto" Rows="2" Columns="1">
+            <lvc:CartesianChart Name="Chart1" Series="{Binding DataService.SeriesCollection1}">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Labels="{Binding DataService.Lables1}" ShowLabels="True">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator IsEnabled="False" Step="1"/>
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisX>
+                <!--<lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="当月"/>
+                </lvc:CartesianChart.AxisY>-->
+                <!--<lvc:CartesianChart.VisualElements>
+                    <lvc:VisualElement X="0" Y="1100" >
+                        <lvc:VisualElement.UIElement>
+                            <TextBlock Foreground="#CDCDCD" Text="{Binding TotleCost}"/> 在图标上添加显示元素，此处是显示文本
+                        </lvc:VisualElement.UIElement>
+                    </lvc:VisualElement>
+                </lvc:CartesianChart.VisualElements>-->
+            </lvc:CartesianChart>
+            <lvc:CartesianChart Name="Chart2" Series="{Binding DataService.SeriesCollection2}">
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Labels="{Binding DataService.Lables2}" ShowLabels="True">
+                        <lvc:Axis.Separator>
+                            <lvc:Separator IsEnabled="False" Step="1"/>
+                        </lvc:Axis.Separator>
+                    </lvc:Axis>
+                </lvc:CartesianChart.AxisX>
+            </lvc:CartesianChart>
+        </UniformGrid>
+    </Grid>
+</Window>

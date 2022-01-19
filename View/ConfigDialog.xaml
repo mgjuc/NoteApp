@@ -1,0 +1,38 @@
+﻿<Window x:Class="记账App.View.ConfigDialog"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:记账App.View" xmlns:viewmodel="clr-namespace:记账App.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:ConfigDialogViewModel}"        
+      mc:Ignorable="d"
+      Title="帮肋" Width="300" Height="160" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Window.Resources>
+        <viewmodel:MainWindowViewModel x:Key="Readme"/>
+    </Window.Resources>
+    <!--<Window.DataContext>
+        <local:ConfigDialog/>
+    </Window.DataContext>-->
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Name="Version" Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" 
+                   Text="{Binding ConfigService.Config.Readme, Source={StaticResource Readme}}"/> <!--用Resources实现了MainWindowViewModel访问-->
+                   <!--Text="{Binding Path=TestString, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Test}}}"/>--><!--绑定到父级-->
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,5,0,0">
+            <Label Margin="0" Width="auto" Content="配置：" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <!--wrap=>自动换行-->
+            <TextBox Width="220" Height="auto" Text="{Binding TypeString}" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Center"/>
+        </StackPanel>
+        <!-- isDefault默认按键，isCancel=》ESC绑定的按键-->
+        <Button Margin="0,5,0,0" Grid.Column="1" Grid.Row="2" IsDefault="True" IsCancel="True" MinWidth="60" HorizontalAlignment="Right" Content="取消"/>
+        <Button Margin="5,5,0,0" Grid.Column="0" Grid.Row="2" IsDefault="False" MinWidth="60" HorizontalAlignment="Left" Command="{Binding UpdateTypes}" Content="更新"/>
+    </Grid>
+</Window>
